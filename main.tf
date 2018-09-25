@@ -33,6 +33,7 @@ resource "aws_subnet" "public_subnet" {
   tags {
     Name = "${var.project_name}-public-${var.aws_region}${var.aws_azs[count.index]}"
     Zone = "${var.aws_region}${var.aws_azs[count.index]}"
+    Tier = "public"
   }
 }
 
@@ -46,6 +47,7 @@ resource "aws_subnet" "private_subnet" {
   tags {
     Name = "${var.project_name}-private-${var.aws_region}${var.aws_azs[count.index]}"
     Zone = "${var.aws_region}${var.aws_azs[count.index]}"
+    Tier = "private"
   }
 }
 
