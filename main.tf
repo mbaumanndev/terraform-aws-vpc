@@ -2,7 +2,11 @@
 
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
-  backend "s3" {}
+  backend "s3" {
+    bucket = "${var.terraform_bucket}"
+    key    = "${var.terraform_key}"
+    region = "${var.aws_region}"
+  }
 }
 
 ### Module Main
