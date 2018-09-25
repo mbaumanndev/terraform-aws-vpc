@@ -3,11 +3,11 @@ output "vpc_id" {
 }
 
 output "private_subnets" {
-  value = [ "${aws_subnet.private_subnet.*.id}" ]
+  value = ["${aws_subnet.private_subnet.*.id}"]
 }
 
 output "public_subnets" {
-  value = [ "${aws_subnet.public_subnet.*.id}" ]
+  value = ["${aws_subnet.public_subnet.*.id}"]
 }
 
 output "nat_ami_id" {
@@ -15,5 +15,5 @@ output "nat_ami_id" {
 }
 
 output "nat_ids" {
-  value = [ "${aws_instance.nat.*.id}" ]
+  value = ["${aws_instance.nat.*.id}"]
 }

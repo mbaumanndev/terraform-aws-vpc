@@ -15,15 +15,15 @@ resource "aws_vpc" "vpc" {
   cidr_block = "${var.vpc_cidr}"
 
   tags {
-    Name = "${var.project_name}-${var.vpc_name}"
+    Name = "${var.project_name}-vpc"
   }
 }
 
 resource "aws_subnet" "public_subnet" {
-  vpc_id = "${aws_vpc.vpc.id}"
-  count = "${length(var.aws_azs)}"
-  cidr_block = "${cidrsubnet(var.vpc_cidr, 4, count.index)}"
-  availability_zone = "${var.aws_region}${var.aws_azs[count.index]}"
+  vpc_id                  = "${aws_vpc.vpc.id}"
+  count                   = "${length(var.aws_azs)}"
+  cidr_block              = "${cidrsubnet(var.vpc_cidr, 4, count.index)}"
+  availability_zone       = "${var.aws_region}${var.aws_azs[count.index]}"
   map_public_ip_on_launch = true
 
   tags {
@@ -32,12 +32,11 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
-
 resource "aws_subnet" "private_subnet" {
-  vpc_id = "${aws_vpc.vpc.id}"
-  count = "${length(var.aws_azs)}"
-  cidr_block = "${cidrsubnet(var.vpc_cidr, 4, 15 - count.index)}"
-  availability_zone = "${var.aws_region}${var.aws_azs[count.index]}"
+  vpc_id                  = "${aws_vpc.vpc.id}"
+  count                   = "${length(var.aws_azs)}"
+  cidr_block              = "${cidrsubnet(var.vpc_cidr, 4, 15 - count.index)}"
+  availability_zone       = "${var.aws_region}${var.aws_azs[count.index]}"
   map_public_ip_on_launch = false
 
   tags {
@@ -96,11 +95,11 @@ resource "aws_key_pair" "key_pair" {
 # }
 
 resource "aws_instance" "nat" {
-  ami           = "${data.aws_ami.nat_ami.id}"
-  instance_type = "${var.nat_instance_type}"
-  count = "${length(var.aws_azs)}"
-  subnet_id = "${element(aws_subnet.public_subnet.*.id, count.index)}"
-  key_name = "${aws_key_pair.key_pair.key_name}"
+  ami               = "${data.aws_ami.nat_ami.id}"
+  instance_type     = "${var.nat_instance_type}"
+  count             = "${length(var.aws_azs)}"
+  subnet_id         = "${element(aws_subnet.public_subnet.*.id, count.index)}"
+  key_name          = "${aws_key_pair.key_pair.key_name}"
   availability_zone = "${var.aws_region}${var.aws_azs[count.index]}"
   source_dest_check = false
 
@@ -110,10 +109,10 @@ resource "aws_instance" "nat" {
 }
 
 resource "aws_eip" "eip" {
-  vpc = true
-  instance                  = "${element(aws_instance.nat.*.id, count.index)}"
-  depends_on                = ["aws_internet_gateway.gateway"]
-  count = "${length(var.aws_azs)}"
+  vpc        = true
+  instance   = "${element(aws_instance.nat.*.id, count.index)}"
+  depends_on = ["aws_internet_gateway.gateway"]
+  count      = "${length(var.aws_azs)}"
 
   tags {
     Name = "${var.project_name}-eip-${var.aws_region}${var.aws_azs[count.index]}"
@@ -127,7 +126,7 @@ resource "aws_route_table" "public" {
     cidr_block = "0.0.0.0/0"
     gateway_id = "${aws_internet_gateway.gateway.id}"
   }
-  
+
   tags {
     Name = "${var.project_name}-route-table-public"
   }
@@ -135,13 +134,13 @@ resource "aws_route_table" "public" {
 
 resource "aws_route_table" "private" {
   vpc_id = "${aws_vpc.vpc.id}"
-  count = "${length(var.aws_azs)}"
+  count  = "${length(var.aws_azs)}"
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block  = "0.0.0.0/0"
     instance_id = "${element(aws_instance.nat.*.id, count.index)}"
   }
-  
+
   tags {
     Name = "${var.project_name}-route-table-private-${var.aws_region}${var.aws_azs[count.index]}"
   }
