@@ -1,15 +1,3 @@
-variable "terraform_bucket" {
-  type        = "string"
-  description = "AWS bucket to store terraform state"
-  default     = "terraform-bucket"
-}
-
-variable "terraform_key" {
-  type        = "string"
-  description = "Key of the terraform state file"
-  default     = "/terraform/state"
-}
-
 variable "aws_region" {
   type        = "string"
   description = "Region to use"

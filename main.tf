@@ -3,9 +3,9 @@
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "s3" {
-    bucket = "${var.terraform_bucket}"
-    key    = "${var.terraform_key}"
-    region = "${var.aws_region}"
+    bucket = "mbaumann-terraform"
+    key    = "terraform/state"
+    region = "us-east-1"
   }
 }
 
