@@ -10,12 +10,6 @@ variable "project_name" {
   default     = "terraform-aws"
 }
 
-variable "vpc_name" {
-  type        = "string"
-  description = "Name of the VPC"
-  default     = "vpc"
-}
-
 variable "vpc_cidr" {
   type        = "string"
   description = "CIDR adress for the vpc"

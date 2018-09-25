@@ -17,3 +17,15 @@ output "nat_ami_id" {
 output "nat_ids" {
   value = ["${aws_instance.nat.*.id}"]
 }
+
+output "eips" {
+  value = ["${aws_eip.eip.*.id}"]
+}
+
+output "public_table" {
+  value = "${aws_route_table.public.id}"
+}
+
+output "private_table" {
+  value = ["${aws_route_table.private.*.id}"]
+}

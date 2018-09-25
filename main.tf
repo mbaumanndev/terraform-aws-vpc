@@ -1,9 +1,9 @@
 ### Backend definition
 
-# terraform {
-#   # The configuration for this backend will be filled in by Terragrunt
-#   backend "s3" {}
-# }
+terraform {
+  # The configuration for this backend will be filled in by Terragrunt
+  backend "s3" {}
+}
 
 ### Module Main
 
@@ -117,6 +117,12 @@ resource "aws_eip" "eip" {
   tags {
     Name = "${var.project_name}-eip-${var.aws_region}${var.aws_azs[count.index]}"
   }
+}
+
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = "${element(aws_instance.nat.*.id, count.index)}"
+  allocation_id = "${element(aws_eip.eip.*.id, count.index)}"
+  count         = "${length(var.aws_azs)}"
 }
 
 resource "aws_route_table" "public" {
